@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+.DS_Store
+
+# Artefactos reproducibles: se regeneran desde el reglamento
+ejercicio-1-mtg/data/index/*.jsonl
+# El reglamento del cliente no se versiona
+ejercicio-1-mtg/data/raw/*
+!ejercicio-1-mtg/data/raw/.gitkeep
+
+# Notas de trabajo, no forman parte del entregable
+*.local.md
