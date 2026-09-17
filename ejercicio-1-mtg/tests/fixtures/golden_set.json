@@ -1,0 +1,18 @@
+[
+  {"query": "Que fases hay en un turno de juego?", "expected": ["500.1"]},
+  {"query": "Como funciona el mana?", "expected": ["106.1", "106.2"]},
+  {"query": "Cuando se vacia la reserva de mana?", "expected": ["500.4", "106.4"]},
+  {"query": "Como funciona dana primero en el combate?", "expected": ["702.7b", "510.4"]},
+  {"query": "Que hace arrollar cuando la criatura bloqueadora muere?", "expected": ["702.19b", "702.19c"]},
+  {"query": "Como se declaran los bloqueadores?", "expected": ["509.1", "509.1a"]},
+  {"query": "Quien asigna el dano de combate y cuando?", "expected": ["510.1", "510.1a"]},
+  {"query": "Que es la pila y como se resuelven los hechizos?", "expected": ["405.1", "608.1"]},
+  {"query": "Cuantos puntos de vida empieza teniendo un jugador?", "expected": ["103.3"]},
+  {"query": "Que pasa si un jugador no puede robar una carta?", "expected": ["104.3c", "704.5b"]},
+  {"query": "Que son las acciones basadas en estado?", "expected": ["704.1", "704.3"]},
+  {"query": "Como funciona el toque mortal?", "expected": ["702.2b", "702.2"]},
+  {"query": "Que hace el vinculo vital?", "expected": ["702.15a", "702.15"]},
+  {"query": "Cuando recibe prioridad un jugador?", "expected": ["117.1", "117.3"]},
+  {"query": "Que pasos tiene la fase de combate?", "expected": ["506.1", "507.1"]},
+  {"query": "Explicame la regla 702.7b", "expected": ["702.7b"]}
+]

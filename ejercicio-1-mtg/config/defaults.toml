@@ -1,0 +1,102 @@
+# Valores por defecto del asistente.
+#
+# Esto NO son secretos: es la configuracion que se versiona, la que define como
+# se comporta el sistema cuando nadie dice lo contrario. Las credenciales van
+# aparte, en el entorno o en un `.env` que nunca se versiona.
+#
+# Precedencia, de mas fuerte a mas debil:
+#   1. variable de entorno (incluye lo que exporta el `.env` al arrancar)
+#   2. este fichero
+#   3. el default declarado en `Settings`, que solo actua si falta la clave aqui
+#
+# Las claves son los mismos nombres que los campos de `Settings`; el nombre en
+# MAYUSCULAS que aparece en cada comentario es la variable de entorno que la
+# pisa. Ver `src/mtg_assistant/config.py`.
+
+# ---------------------------------------------------------------------------
+# Proveedor del modelo
+# ---------------------------------------------------------------------------
+
+# LLM_PROVIDER -- 'bedrock' o 'anthropic'. No es solo cambiar de endpoint: en
+# Bedrock el encargado del tratamiento es AWS, no Anthropic. Ver clients/llm.py.
+llm_provider = "bedrock"
+
+# AWS_REGION -- solo se usa con el proveedor 'bedrock'.
+aws_region = "eu-west-1"
+
+# El modelo por defecto depende del proveedor: los ids NO son intercambiables
+# entre plataformas, asi que hay uno por cada uno y `model` se resuelve al
+# arrancar segun `llm_provider`.
+#
+# Claude en Bedrock con el perfil de inferencia `eu.`: la inferencia se queda
+# dentro de la UE y el encargado del tratamiento es AWS, no Anthropic. Es una
+# decision legal ademas de tecnica. Las tres partes del id son necesarias:
+#
+#   eu.             perfil de inferencia europeo. Sin el: 400 "on-demand
+#                   throughput isn't supported". Enruta por 6 regiones de
+#                   estados miembro (IE/DE/SE/FR/IT/ES): es UE-AMPLIO, no un
+#                   unico pais.
+#   anthropic.      prefijo de plataforma (la API de primera parte usa el
+#                   nombre a secas).
+#   -20251001-v1:0  forma DATADA. El id sin fecha solo existe en el endpoint
+#                   Mantle, que no sirve Haiku 4.5.
+bedrock_model = "eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+
+# El mismo modelo que en Bedrock, en su forma de primera parte: sin prefijo de
+# plataforma y SIN fecha. Manteniendo la misma familia en los dos proveedores,
+# cambiar de proveedor no cambia ni la calidad de las respuestas ni la forma de
+# la peticion, asi que compara manzanas con manzanas.
+anthropic_model = "claude-haiku-4-5"
+
+# MTG_MODEL -- fijar esto gana a los dos de arriba, sea cual sea el proveedor.
+# Cambiar de modelo no siempre es solo esta clave: la politica IAM de la cuenta
+# enumera que modelos y regiones se permiten.
+# model = "..."
+
+# MTG_MAX_TOKENS -- techo de la respuesta del modelo.
+max_tokens = 8000
+
+# MTG_EFFORT -- low | medium | high | xhigh | max. Solo viaja a los modelos que
+# lo admiten (familia 4.6 en adelante): Haiku 4.5 devuelve 400 ante
+# `output_config.effort`, y `capabilities_for()` lo omite solo.
+effort = "medium"
+
+# MTG_MAX_TOOL_TURNS -- vueltas del bucle agentico antes de rendirse y ofrecer
+# escalar a un juez. Cada vuelta es una llamada al modelo: subirlo sube el coste
+# y la latencia del peor caso.
+max_tool_turns = 8
+
+# ---------------------------------------------------------------------------
+# RAG del reglamento
+# ---------------------------------------------------------------------------
+
+# MTG_RULES_INDEX -- relativa a la raiz del proyecto, o absoluta.
+# El indice es un artefacto reproducible: se regenera desde el PDF con
+# `python -m mtg_assistant.rag.ingest` y no se versiona.
+rules_index_path = "data/index/rules.jsonl"
+
+# MTG_RULES_TOP_K -- fragmentos que recupera `search_rules` cuando el modelo no
+# pide un numero concreto. La puerta de calidad mide recall@6, asi que bajarlo
+# de 6 invalida esa medicion.
+rules_top_k = 6
+
+# ---------------------------------------------------------------------------
+# UI
+# ---------------------------------------------------------------------------
+
+# MTG_API_URL -- donde escucha la API. La UI de Streamlit le habla por HTTP, asi
+# que si mueves el puerto hay que mover los dos extremos a la vez.
+api_url = "http://127.0.0.1:8000"
+
+# ---------------------------------------------------------------------------
+# API publica de cartas (no necesita credenciales)
+# ---------------------------------------------------------------------------
+
+# MTG_API_BASE_URL
+mtg_api_base_url = "https://api.magicthegathering.io/v1"
+mtg_api_timeout = 15.0
+
+# La API pagina y no ordena por relevancia. Estos dos acotan cuanto llega a
+# traer una busqueda con rango de coste, que es la que filtra en cliente.
+mtg_api_page_size = 100
+mtg_api_max_pages = 3
