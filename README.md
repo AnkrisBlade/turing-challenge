@@ -6,6 +6,7 @@ carpeta, con su código, sus tests y su documentación.
 | Ejercicio | Enunciado | Estado |
 |---|---|---|
 | [1 — Asistente de Magic: The Gathering](ejercicio-1-mtg/) | Chatbot para un call center: reglas, interacciones entre cartas, búsqueda de cartas y creación de cartas custom | ✅ |
+| [2 — Revisión de código](ejercicio-2-code-review/code_review.md) | Auditoría de un pipeline RAG ajeno (OpenAI + Chroma) y versión mejorada razonada | ✅ |
 
 ---
 
@@ -31,6 +32,22 @@ python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,ingest]"
 pytest
 ```
+
+---
+
+## Ejercicio 2
+
+Revisión de un pipeline de ingesta y consulta escrito por otra persona. El
+código de partida no arranca con una instalación actual de `openai`, pierde
+documentos en cuanto se ingesta dos veces y lleva la clave de API en el fuente.
+
+- **[Análisis y código mejorado](ejercicio-2-code-review/code_review.md)** — 15
+  hallazgos clasificados por severidad, la versión corregida comentada, y qué
+  se ha dejado deliberadamente fuera.
+
+La versión mejorada **sigue en OpenAI** a propósito: cambiar de proveedor no es
+un hallazgo de revisión, y mezclar una migración con los arreglos ocultaría
+cuáles eran los problemas reales.
 
 ---
 
