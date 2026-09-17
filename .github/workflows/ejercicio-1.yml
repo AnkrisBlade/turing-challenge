@@ -1,0 +1,25 @@
+name: ejercicio-1-mtg
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ejercicio-1-mtg
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -e ".[dev,ingest]"
+      - run: ruff check src tests scripts
+      - run: pytest --cov=mtg_assistant --cov-report=term-missing

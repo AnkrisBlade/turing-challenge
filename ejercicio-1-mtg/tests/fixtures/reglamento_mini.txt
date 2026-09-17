@@ -1,0 +1,27 @@
+<<<PAGE:1>>>
+5. Turnos y fases
+
+500.1. Un turno consiste en cinco fases, en este orden: comienzo, precombate
+principal, combate, postcombate principal y final.
+500.2. Una fase o paso en la que los jugadores reciben prioridad termina cuando
+la pila esta vacia y todos los jugadores pasan consecutivamente.
+
+<<<PAGE:2>>>
+1. Mana y costes
+
+106.1. El mana es el recurso principal del juego. Hay seis tipos de mana:
+blanco, azul, negro, rojo, verde e incoloro.
+106.2. El mana se anade a la reserva de mana de un jugador cuando se activa una
+habilidad de mana o se resuelve un hechizo que produce mana.
+106.4. Cuando termina un paso o una fase, el mana que quede en la reserva de un
+jugador se vacia.
+
+<<<PAGE:3>>>
+7. Palabras clave
+
+509.1a. El jugador atacante elige que criaturas bloqueadoras reciben el dano de
+combate de cada criatura atacante bloqueada.
+702.7b. Una criatura con dana primero asigna su dano de combate durante el
+primer paso de dano de combate, antes que las criaturas sin dana primero.
+702.9b. Una criatura con arrollar asigna el exceso de dano de combate al
+jugador defensor.
