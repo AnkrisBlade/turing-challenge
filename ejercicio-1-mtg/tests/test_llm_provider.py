@@ -138,11 +138,12 @@ def test_build_llm_client_construye_el_cliente_de_bedrock(monkeypatch) -> None:
     """No se llama a AWS: solo se comprueba que se elige la clase y la region."""
     import mtg_assistant.clients.llm as llm_module
 
-    capturado: dict[str, str] = {}
+    capturado: dict[str, object] = {}
 
     class FakeBedrock:
-        def __init__(self, aws_region: str) -> None:
+        def __init__(self, aws_region: str, max_retries: int) -> None:
             capturado["region"] = aws_region
+            capturado["max_retries"] = max_retries
 
     monkeypatch.setattr("anthropic.AnthropicBedrock", FakeBedrock, raising=False)
     cliente = llm_module.build_llm_client(
@@ -150,6 +151,7 @@ def test_build_llm_client_construye_el_cliente_de_bedrock(monkeypatch) -> None:
     )
     assert isinstance(cliente, FakeBedrock)
     assert capturado["region"] == "eu-central-1"
+    assert capturado["max_retries"] == llm_module.MAX_RETRIES
 
 
 # --- variables definidas pero vacias --------------------------------------
