@@ -65,6 +65,12 @@ def capabilities_for(model_id: str) -> ModelCapabilities:
     return ModelCapabilities(supports_adaptive_thinking=modern, supports_effort=modern)
 
 
+# Bedrock devuelve 503 "unable to process your request" de forma intermitente
+# cuando el perfil `eu.` va justo de capacidad. El SDK ya reintenta 429/5xx con
+# backoff exponencial; subimos de 2 a 5 reintentos para absorber esos picos.
+MAX_RETRIES = 5
+
+
 def build_llm_client(settings: Settings) -> Any:
     """Cliente del proveedor configurado. Las credenciales vienen del entorno."""
     if settings.llm_provider == "bedrock":
@@ -74,12 +80,12 @@ def build_llm_client(settings: Settings) -> Any:
             raise RuntimeError(
                 "Falta el extra de Bedrock. Instala con: pip install -e '.[bedrock]'"
             ) from exc
-        return AnthropicBedrock(aws_region=settings.aws_region)
+        return AnthropicBedrock(aws_region=settings.aws_region, max_retries=MAX_RETRIES)
 
     if settings.llm_provider == "anthropic":
         import anthropic
 
-        return anthropic.Anthropic()
+        return anthropic.Anthropic(max_retries=MAX_RETRIES)
 
     raise ValueError(
         f"LLM_PROVIDER='{settings.llm_provider}' no reconocido. Usa 'bedrock' o 'anthropic'."

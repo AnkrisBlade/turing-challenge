@@ -52,6 +52,14 @@ def _post_message(text: str) -> dict:
         json={"message": text, "conversation_id": st.session_state.conversation_id},
         timeout=TIMEOUT,
     )
+    if response.is_error:
+        # Mostrar el `detail` de la API en vez del volcado generico de httpx.
+        try:
+            detail = response.json().get("detail")
+        except ValueError:
+            detail = None
+        if detail:
+            raise httpx.HTTPStatusError(str(detail), request=response.request, response=response)
     response.raise_for_status()
     return response.json()
 

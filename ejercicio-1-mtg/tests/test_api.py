@@ -76,3 +76,25 @@ def test_health_ok_reporta_el_numero_de_fragmentos(monkeypatch, rules_index) -> 
     monkeypatch.setattr(api_module, "load_rules_index", lambda: rules_index)
     body = TestClient(api_module.app).get("/health").json()
     assert body["status"] == "ok" and body["rule_chunks"] == len(rules_index)
+
+
+def test_caida_del_proveedor_es_503_con_mensaje_claro() -> None:
+    import anthropic
+    import httpx
+
+    class AgentCaido:
+        def chat(self, *_args, **_kwargs):
+            request = httpx.Request("POST", "https://bedrock.example/v1/messages")
+            response = httpx.Response(503, request=request)
+            raise anthropic.InternalServerError(
+                "Bedrock is unable to process your request.", response=response, body=None
+            )
+
+    api_module.app.dependency_overrides[api_module.get_agent] = lambda: AgentCaido()
+    try:
+        response = TestClient(api_module.app).post("/chat", json={"message": "hola"})
+    finally:
+        api_module.app.dependency_overrides.clear()
+
+    assert response.status_code == 503
+    assert "Vuelve a intentarlo" in response.json()["detail"]

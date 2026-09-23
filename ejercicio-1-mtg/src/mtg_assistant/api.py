@@ -8,6 +8,7 @@ from __future__ import annotations
 import logging
 from functools import lru_cache
 
+import anthropic
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -58,6 +59,16 @@ def chat(request: ChatRequest, agent: MTGAgent = Depends(get_agent)) -> ChatResp
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except MTGApiError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
+    except (anthropic.APIConnectionError, anthropic.InternalServerError) as exc:
+        # El SDK ya agoto sus reintentos: el proveedor del modelo no responde.
+        logger.warning("Proveedor del modelo no disponible: %s", exc)
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "El modelo no esta disponible ahora mismo. "
+                "Vuelve a intentarlo en unos segundos."
+            ),
+        ) from exc
 
 
 @app.delete("/conversations/{conversation_id}", status_code=204)
